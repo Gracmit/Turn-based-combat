@@ -20,7 +20,9 @@ public class CombatStateMachine : MonoBehaviour
         _stateMachine.AddState(win);
         _stateMachine.AddState(lose);
         
-        _stateMachine.AddTransition(start, enemyTurn, () => true);
+        _stateMachine.AddTransition(start, enemyTurn, () => false);
+        
+        _stateMachine.SetState(start);
     }
 
     void Update()
@@ -100,7 +102,7 @@ public class StartCombat : IState
 
     public void OnEnter()
     {
-
+        CombatManager.Instance.InstantiateBattlefield();
     }
 
     public void OnExit()
