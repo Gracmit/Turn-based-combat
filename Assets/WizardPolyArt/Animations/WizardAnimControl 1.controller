@@ -53,7 +53,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WizardAnimControl
+  m_Name: WizardAnimControl 1
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Attack
@@ -266,7 +266,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 1102747604133315158}
-    m_Position: {x: 240, y: 40, z: 0}
+    m_Position: {x: 240, y: 24, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102638690945454542}
     m_Position: {x: 530, y: 20, z: 0}

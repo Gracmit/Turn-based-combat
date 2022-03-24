@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CombatManager : MonoBehaviour
@@ -8,13 +8,16 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private Transform[] _partySpawnPoints;
     
     private static CombatManager _instance;
-    private List<CombatUnit> _turnQueue = new List<CombatUnit>();
+    private List<CombatUnit> _turnQueue = new();
     private int _turnIndex = 0;
-    private bool _initialized = false;
+    private CombatUnit _activeUnit;
+    private bool _initialized;
 
     public static CombatManager Instance => _instance;
+    public CombatUnit ActiveUnit => _activeUnit;
     public bool Initialized => _initialized;
-    
+    public List<CombatUnit> Party => Enumerable.ToList(_turnQueue.Where(x => x.GetType() == typeof(PartyMember)));
+
     public void NegateInitialized() => _initialized = false;
 
     private void Awake()
@@ -34,6 +37,7 @@ public class CombatManager : MonoBehaviour
         var gameManager = FindObjectOfType<GameManager>();
         InstantiateEnemies(gameManager.Enemies);
         InstantiateParty(gameManager.Party);
+        _activeUnit = _turnQueue[_turnIndex];
         _initialized = true;
     }
 
@@ -42,7 +46,8 @@ public class CombatManager : MonoBehaviour
         var spawnPointCounter = 0;
         foreach (var partyMember in party)
         {
-            Instantiate(partyMember.Model, _partySpawnPoints[spawnPointCounter]);
+            var model = Instantiate(partyMember.Model, _partySpawnPoints[spawnPointCounter]);
+            partyMember.SetAnimator(model.GetComponent<Animator>());
             spawnPointCounter++;
             _turnQueue.Add(partyMember);
         }
@@ -53,7 +58,8 @@ public class CombatManager : MonoBehaviour
         var spawnPointCounter = 0;
         foreach (var enemy in enemies)
         {
-            Instantiate(enemy.Model, _enemySpawnPoints[spawnPointCounter]);
+            var model = Instantiate(enemy.Model, _enemySpawnPoints[spawnPointCounter]);
+            enemy.SetAnimator(model.GetComponent<Animator>());
             spawnPointCounter++;
             _turnQueue.Add(enemy);
         }
@@ -65,5 +71,21 @@ public class CombatManager : MonoBehaviour
             return _turnQueue[_turnIndex + 1];
 
         return _turnQueue[0];
+    }
+
+    public void NextTurn()
+    {
+        if (_turnIndex < _turnQueue.Count - 1)
+            _activeUnit = _turnQueue[_turnIndex++];
+        else
+        {
+            _turnIndex = 0;
+            _activeUnit = _turnQueue[_turnIndex++];
+        }
+    }
+
+    public void RemoveUnit(CombatUnit combatUnit)
+    {
+        _turnQueue.Remove(combatUnit);
     }
 }
