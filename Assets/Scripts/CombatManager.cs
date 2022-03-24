@@ -9,9 +9,14 @@ public class CombatManager : MonoBehaviour
     
     private static CombatManager _instance;
     private List<CombatUnit> _turnQueue = new List<CombatUnit>();
+    private int _turnIndex = 0;
+    private bool _initialized = false;
 
     public static CombatManager Instance => _instance;
+    public bool Initialized => _initialized;
     
+    public void NegateInitialized() => _initialized = false;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -29,7 +34,7 @@ public class CombatManager : MonoBehaviour
         var gameManager = FindObjectOfType<GameManager>();
         InstantiateEnemies(gameManager.Enemies);
         InstantiateParty(gameManager.Party);
-
+        _initialized = true;
     }
 
     private void InstantiateParty(List<PartyMember> party)
@@ -52,5 +57,13 @@ public class CombatManager : MonoBehaviour
             spawnPointCounter++;
             _turnQueue.Add(enemy);
         }
+    }
+
+    public CombatUnit NextUnit()
+    {
+        if (_turnIndex < _turnQueue.Count - 1)
+            return _turnQueue[_turnIndex + 1];
+
+        return _turnQueue[0];
     }
 }

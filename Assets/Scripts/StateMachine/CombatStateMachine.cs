@@ -20,7 +20,10 @@ public class CombatStateMachine : MonoBehaviour
         _stateMachine.AddState(win);
         _stateMachine.AddState(lose);
         
-        _stateMachine.AddTransition(start, enemyTurn, () => false);
+        _stateMachine.AddTransition(start, enemyTurn,
+            () => CombatManager.Instance.Initialized && CombatManager.Instance.NextUnit().GetType() == typeof(Enemy));
+        _stateMachine.AddTransition(start, enemyTurn,
+            () => CombatManager.Instance.Initialized && CombatManager.Instance.NextUnit().GetType() == typeof(PartyMember));
         
         _stateMachine.SetState(start);
     }
@@ -107,6 +110,6 @@ public class StartCombat : IState
 
     public void OnExit()
     {
-        
+        CombatManager.Instance.NegateInitialized();
     }
 }
