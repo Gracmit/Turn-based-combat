@@ -173,16 +173,16 @@ MonoBehaviour:
     _defence: 2
     _model: {fileID: 1837317425425208, guid: 3aec22b5d3f3c2947bb81040b56e5f96, type: 3}
   _party:
-  - _name: 
+  - _name: Blue wizard
     _health: 100
     _maxHealth: 10
     _attack: 6
-    _defence: 7
+    _defence: 10
     _model: {fileID: 1248815240492774, guid: ccd8c3b89aa02e943a08ab9238a8a70c, type: 3}
-  - _name: 
+  - _name: Green wizard
     _health: 100
     _maxHealth: 10
-    _attack: 6
+    _attack: 10
     _defence: 7
     _model: {fileID: 1953271650171834, guid: dbf7a0c9d76b77a40af3104feac0641d, type: 3}
 --- !u!4 &14451104
