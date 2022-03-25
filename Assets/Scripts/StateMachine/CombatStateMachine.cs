@@ -24,6 +24,8 @@ public class CombatStateMachine : MonoBehaviour
             () => CombatManager.Instance.Initialized && CombatManager.Instance.NextUnit().GetType() == typeof(Enemy));
         _stateMachine.AddTransition(start, partyTurn,
             () => CombatManager.Instance.Initialized && CombatManager.Instance.NextUnit().GetType() == typeof(PartyMember));
+        _stateMachine.AddTransition(enemyTurn, enemyTurn, () => CombatManager.Instance.ActiveUnit.Attacked && CombatManager.Instance.NextUnit().GetType() == typeof(Enemy));
+        _stateMachine.AddTransition(enemyTurn, partyTurn, () => CombatManager.Instance.ActiveUnit.Attacked && CombatManager.Instance.NextUnit().GetType() == typeof(PartyMember));
         
         _stateMachine.SetState(start);
     }
@@ -77,24 +79,5 @@ public class PartyTurn: IState
 
     public void OnExit()
     {
-    }
-}
-
-public class EnemyTurn : IState
-{
-    public void Tick()
-    {
-        
-    }
-
-    public void OnEnter()
-    {
-        var activeEnemy = (Enemy)CombatManager.Instance.ActiveUnit;
-        activeEnemy.Attack();
-    }
-
-    public void OnExit()
-    {
-        CombatManager.Instance.NextTurn();
     }
 }

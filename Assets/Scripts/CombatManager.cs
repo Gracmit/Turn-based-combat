@@ -76,11 +76,14 @@ public class CombatManager : MonoBehaviour
     public void NextTurn()
     {
         if (_turnIndex < _turnQueue.Count - 1)
-            _activeUnit = _turnQueue[_turnIndex++];
+        {
+            _turnIndex++;
+            _activeUnit = _turnQueue[_turnIndex];
+        }
         else
         {
             _turnIndex = 0;
-            _activeUnit = _turnQueue[_turnIndex++];
+            _activeUnit = _turnQueue[_turnIndex];
         }
     }
 

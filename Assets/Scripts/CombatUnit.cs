@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,28 +12,35 @@ public class CombatUnit
     [SerializeField] protected int _attack;
     [SerializeField] protected int _defence;
     [SerializeField] protected GameObject _model;
-    
+
     protected Animator _animator;
+    protected bool _attacked = false;
+
     private static readonly int Die1 = Animator.StringToHash("Die");
     private static readonly int GetHit = Animator.StringToHash("GetHit");
 
     public string Name => _name;
     public int Defence => _defence;
     public GameObject Model => _model;
+    public bool Attacked => _attacked;
 
     public void SetAnimator(Animator animator)
     {
         _animator = animator;
     }
     
-    public void TakeHit(int damage, CombatUnit target)
+    public IEnumerator TakeHit(int damage, CombatUnit target)
     {
         _health -= damage;
         _animator.SetTrigger(GetHit);
         Debug.Log($"{target.Name} took {damage} damage");
+        yield return new WaitForSeconds(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
 
         if (_health <= 0)
+        {
             Die();
+            yield return new WaitForSeconds(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.length);
+        }
     }
     
     private void Die()
@@ -40,17 +48,26 @@ public class CombatUnit
         CombatManager.Instance.RemoveUnit(this);
         _animator.SetTrigger(Die1);
     }
+
+    public void NegateAttacked() => _attacked = false;
 }
 
 
 [Serializable]
 public class Enemy : CombatUnit
 {
-    public void Attack()
+    private static readonly int Attack1 = Animator.StringToHash("Attack");
+
+    public void Attack() => CoroutineHandler.Instance.HandleCoroutine(HandleAttack());
+
+    public IEnumerator HandleAttack()
     {
         var target = ChooseTarget();
         var damage = CountDamage(target.Defence);
-        target.TakeHit(damage, target);
+        _animator.SetTrigger(Attack1);
+        yield return new WaitForSeconds(.5f);
+        yield return CoroutineHandler.Instance.HandleCoroutine(target.TakeHit(damage, target));
+        _attacked = true;
     }
 
     private int CountDamage(int targetDefence)
@@ -68,6 +85,8 @@ public class Enemy : CombatUnit
         return (PartyMember)party[index];
     }
 }
+
+
 [Serializable]
 public class PartyMember : CombatUnit
 {
