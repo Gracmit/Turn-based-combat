@@ -16,7 +16,9 @@ public class CombatManager : MonoBehaviour
     public static CombatManager Instance => _instance;
     public CombatUnit ActiveUnit => _activeUnit;
     public bool Initialized => _initialized;
+    
     public List<CombatUnit> Party => Enumerable.ToList(_turnQueue.Where(x => x.GetType() == typeof(PartyMember)));
+    public List<CombatUnit> Enemies => Enumerable.ToList(_turnQueue.Where(x => x.GetType() == typeof(Enemy)));
 
     public void NegateInitialized() => _initialized = false;
 
