@@ -17,6 +17,7 @@ public class CombatUnit
 
     private static readonly int Die1 = Animator.StringToHash("Die");
     private static readonly int GetHit = Animator.StringToHash("GetHit");
+    private static readonly int Win1 = Animator.StringToHash("Win");
 
     public string Name => _name;
     public int Defence => _defence;
@@ -49,4 +50,9 @@ public class CombatUnit
     }
 
     public void NegateAttacked() => _attacked = false;
+
+    public void Win()
+    {
+        _animator.SetTrigger(Win1);
+    }
 }
